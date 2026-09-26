@@ -1,0 +1,10 @@
+{
+	"id": "local-rest-api-periodic-notes",
+	"name": "Local REST API - Periodic Notes",
+	"version": "1.0.0",
+	"minAppVersion": "1.8.7",
+	"description": "Add periodic note endpoints for daily, weekly, monthly, quarterly, and yearly notes to the Local REST API, with an MCP tool for resolving the current note's path.",
+	"author": "Adam Coddington",
+	"authorUrl": "https://adamcoddington.net/",
+	"isDesktopOnly": true
+}
