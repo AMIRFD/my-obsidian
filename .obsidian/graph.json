@@ -1,5 +1,5 @@
 {
-  "collapse-filter": true,
+  "collapse-filter": false,
   "search": "",
   "showTags": false,
   "showAttachments": false,
@@ -11,7 +11,7 @@
       "query": "path:Me  ",
       "color": {
         "a": 1,
-        "rgb": 7344144
+        "rgb": 16739338
       }
     }
   ],
