@@ -18,3 +18,8 @@ Result
 •VoIP | Voce over IP
 •RTP | Real-time Transport Protocol
 •SIP |Session Initiation Protocol
+
+•PBX | Private Branch Exchange
+•VoIP | Voce over IP
+•RTP | Real-time Transport Protocol
+•SIP |Session Initiation Protocol
