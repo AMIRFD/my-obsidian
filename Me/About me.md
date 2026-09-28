@@ -12,3 +12,9 @@ Result
 این متن را به انتها اضافه کن
 سلام سلام
 احوال شما چطوره
+
+
+•PBX | Private Branch Exchange
+•VoIP | Voce over IP
+•RTP | Real-time Transport Protocol
+•SIP |Session Initiation Protocol
