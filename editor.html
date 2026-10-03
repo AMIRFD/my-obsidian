@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fa" dir="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ویرایشگر فایل</title>
+  <!-- تلگرام WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-color: #181818;
+      --card-bg: #242424;
+      --text-color: #f5f5f5;
+      --border-color: #383838;
+      --accent-color: #2481cc;
+      --accent-hover: #1b66a4;
+      --danger-color: #e53935;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--tg-theme-bg-color, var(--bg-color));
+      color: var(--tg-theme-text-color, var(--text-color));
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Vazirmatn, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* هدر فیکس و تمیز بالای صفحه */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background-color: var(--tg-theme-secondary-bg-color, var(--card-bg));
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    .file-info {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+      direction: ltr;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-save {
+      background-color: var(--tg-theme-button-color, var(--accent-color));
+      color: var(--tg-theme-button-text-color, #ffffff);
+    }
+
+    .btn-save:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-cancel {
+      background-color: transparent;
+      color: var(--danger-color);
+      border: 1px solid var(--danger-color);
+    }
+
+    /* محیط ادیتور */
+    .editor-container {
+      flex: 1;
+      display: flex;
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      padding: 14px;
+      background-color: transparent;
+      color: inherit;
+      font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: none;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* لودینگ */
+    .loader {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      z-index: 20;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="file-info" id="fileNameDisplay">در حال اتصال...</div>
+    <div class="actions">
+      <button class="btn-cancel" onclick="closeApp()">بستن</button>
+      <button class="btn-save" id="btnSave" onclick="saveFile()">ذخیره (Save)</button>
+    </div>
+  </div>
+
+  <div class="editor-container">
+    <div class="loader" id="loader">در حال دریافت محتوای فایل...</div>
+    <textarea id="fileEditor" spellcheck="false" placeholder="متن فایل اینجا نمایش داده می‌شود..."></textarea>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand(); // باز شدن ادیتور به صورت تمام صفحه در تلگرام
+    }
+
+    // آدرس وب‌هوک n8n خودت را اینجا بگذار
+    const N8N_SAVE_WEBHOOK = "https://your-n8n-domain/webhook/save-edited-file";
+    const N8N_LOAD_WEBHOOK = "https://your-n8n-domain/webhook/get-file-content";
+
+    // استخراج پارامترها از آدرس صفحه (?path=Notes/MyFile.md&chat_id=12345)
+    const urlParams = new URLSearchParams(window.location.search);
+    const filePath = urlParams.get('path') || '';
+    const chatId = urlParams.get('chat_id') || (tg?.initDataUnsafe?.user?.id) || '';
+
+    let originalSha = '';
+
+    document.getElementById('fileNameDisplay').textContent = filePath.split('/').pop() || 'Untitled.md';
+
+    // گام اول: لود محتوای اولیه فایل
+    async function loadContent() {
+      if (!filePath) {
+        alert('مسیر فایل نامعتبر است.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${N8N_LOAD_WEBHOOK}?path=${encodeURIComponent(filePath)}`);
+        const data = await response.json();
+        
+        document.getElementById('fileEditor').value = data.content || '';
+        originalSha = data.sha || '';
+        document.getElementById('loader').style.display = 'none';
+      } catch (err) {
+        document.getElementById('loader').textContent = 'خطا در بارگذاری محتوا!';
+      }
+    }
+
+    // گام دوم: ذخیره فایل و بستن آنی پنجره
+    async function saveFile() {
+      const btn = document.getElementById('btnSave');
+      btn.disabled = true;
+      btn.textContent = 'در حال ارسال...';
+
+      const newContent = document.getElementById('fileEditor').value;
+
+      try {
+        // ارسال متن به نود Webhook در n8n
+        fetch(N8N_SAVE_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filePath: filePath,
+            content: newContent,
+            sha: originalSha,
+            chatId: chatId
+          })
+        });
+
+        // بستن خودکار و سریع پنجره Mini App
+        if (tg) {
+          tg.close();
+        } else {
+          window.close();
+        }
+      } catch (e) {
+        alert('خطا در برقراری ارتباط با سرور.');
+        btn.disabled = false;
+        btn.textContent = 'ذخیره (Save)';
+      }
+    }
+
+    function closeApp() {
+      if (tg) tg.close();
+      else window.close();
+    }
+
+    // شروع لودینگ به محض باز شدن صفحه
+    loadContent();
+  </script>
+</body>
+</html>
