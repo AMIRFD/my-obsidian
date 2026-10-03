@@ -1,131 +1,73 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Obsidian Markdown Editor</title>
-  <!-- Telegram WebApp SDK -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ویرایشگر فایل</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root {
-      --bg-color: #121212;
-      --card-bg: #1e1e1e;
-      --text-color: #e0e0e0;
-      --accent-color: #7c3aed;
-      --accent-hover: #6d28d9;
-      --border-color: #333333;
-      --header-bg: #18181b;
-      --success-color: #10b981;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Vazirmatn", Tahoma, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
-
     body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background-color: var(--tg-theme-bg-color, #1e1e1e);
+      color: var(--tg-theme-text-color, #d4d4d4);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       flex-direction: column;
       height: 100vh;
       overflow: hidden;
     }
-
     header {
-      background-color: var(--header-bg);
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border-color);
+      padding: 10px 16px;
+      background-color: var(--tg-theme-secondary-bg-color, #252526);
+      border-bottom: 1px solid #333;
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .file-info {
       font-size: 13px;
-      color: #a1a1aa;
+    }
+    #file-path {
+      font-family: monospace;
+      color: #9cdcfe;
       direction: ltr;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 65%;
+      max-width: 75%;
     }
-
-    .status-badge {
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: #27272a;
-      color: #a1a1aa;
+    #status {
+      font-size: 11px;
+      color: #888;
     }
-
-    .editor-container {
+    #editor-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       padding: 12px;
+      position: relative;
     }
-
     textarea {
       flex: 1;
       width: 100%;
-      background-color: var(--card-bg);
-      color: #f4f4f5;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 14px;
+      background: transparent;
+      color: inherit;
+      border: none;
+      outline: none;
+      resize: none;
       font-size: 15px;
       line-height: 1.6;
-      resize: none;
-      outline: none;
+      font-family: Consolas, Monaco, "Courier New", monospace;
       direction: auto;
-      font-family: "Cascadia Code", "Fira Code", Consolas, monospace, sans-serif;
+      text-align: left;
     }
-
-    textarea:focus {
-      border-color: var(--accent-color);
-    }
-
-    footer {
-      padding: 12px 16px;
-      background-color: var(--header-bg);
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      gap: 10px;
-    }
-
-    button {
-      flex: 1;
-      background-color: var(--accent-color);
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.2s;
-    }
-
-    button:hover {
-      background-color: var(--accent-hover);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .loading-overlay {
+    #loader {
       position: absolute;
-      inset: 0;
-      background: rgba(18, 18, 18, 0.85);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(30, 30, 30, 0.85);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -133,132 +75,150 @@
       gap: 12px;
       z-index: 10;
     }
-
     .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid #333;
-      border-top-color: var(--accent-color);
+      width: 36px;
+      height: 36px;
+      border: 3px solid #444;
+      border-top: 3px solid #007acc;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    footer {
+      padding: 12px 16px;
+      background-color: var(--tg-theme-secondary-bg-color, #252526);
+      border-top: 1px solid #333;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background-color: var(--tg-theme-button-color, #0e639c);
+      color: var(--tg-theme-button-text-color, #ffffff);
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
 
-  <!-- Loading State -->
-  <div id="loader" class="loading-overlay">
-    <div class="spinner"></div>
-    <span id="loading-text" style="font-size: 14px; color: #a1a1aa;">در حال بارگذاری فایل...</span>
-  </div>
-
   <header>
-    <div class="file-info" id="filePathLabel">Loading...</div>
-    <div class="status-badge" id="statusBadge">آماده</div>
+    <div id="file-path">بارگذاری...</div>
+    <div id="status">در حال اتصال...</div>
   </header>
 
-  <div class="editor-container">
-    <textarea id="fileContent" placeholder="محتوای فایل در اینجا نمایش داده می‌شود..."></textarea>
+  <div id="editor-container">
+    <div id="loader">
+      <div class="spinner"></div>
+      <span id="loader-text">در حال بارگذاری فایل...</span>
+    </div>
+    <textarea id="content" placeholder="محتوای فایل در اینجا نمایش داده می‌شود..." disabled></textarea>
   </div>
 
   <footer>
-    <button id="saveBtn" onclick="saveFile()">
+    <button id="save-btn" onclick="saveFile()" disabled>
       <span>💾 ذخیره تغییرات (Commit)</span>
     </button>
   </footer>
 
   <script>
+    // آدرس‌های وب‌هوک n8n شما
+    const N8N_GET_URL = "https://ah-fadaei.app.n8n.cloud/webhook/get-file-content";
+    const N8N_SAVE_URL = "https://ah-fadaei.app.n8n.cloud/webhook/save-edited-file";
+
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
       tg.expand();
     }
 
-    // آدرس وب‌هوک‌های n8n (دامنه/آدرس n8n خودت را جایگزین کن)
-    const N8N_GET_URL = "https://ah-fadaei.app.n8n.cloud/webhook/get-file-content";
-    const N8N_SAVE_URL = "https://ah-fadaei.app.n8n.cloud/webhook/save-edited-file";
-
     const urlParams = new URLSearchParams(window.location.search);
-    const filePath = urlParams.get('path') || '';
-    const chatId = urlParams.get('chat_id') || '';
+    // پشتیبانی همزمان از path یا file و همچنین chatId
+    const filePath = urlParams.get('path') || urlParams.get('file');
+    const chatId = urlParams.get('chat_id') || urlParams.get('chatId') || tg?.initDataUnsafe?.user?.id || '';
 
-    document.getElementById('filePathLabel').innerText = filePath || 'مسیر فایل نامشخص';
+    const filePathEl = document.getElementById('file-path');
+    const statusEl = document.getElementById('status');
+    const contentEl = document.getElementById('content');
+    const loaderEl = document.getElementById('loader');
+    const loaderTextEl = document.getElementById('loader-text');
+    const saveBtn = document.getElementById('save-btn');
 
-    let fileSha = '';
-
-    // دریافت محتوای فعلی فایل از n8n
-    async function loadFileContent() {
+    async function loadContent() {
       if (!filePath) {
-        alert('مسیر فایل ارسال نشده است!');
-        document.getElementById('loader').style.display = 'none';
+        loaderTextEl.innerText = "❌ مسیر فایل مشخص نشده است!";
+        document.querySelector('.spinner').style.display = 'none';
         return;
       }
 
-      try {
-        const res = await fetch(`${N8N_GET_URL}?path=${encodeURIComponent(filePath)}&chat_id=${chatId}`);
-        const data = await res.json();
+      filePathEl.innerText = filePath;
+      statusEl.innerText = "دریافت فایل...";
 
-        if (data && data.content !== undefined) {
-          document.getElementById('fileContent').value = data.content;
-          fileSha = data.sha || '';
-          document.getElementById('loader').style.display = 'none';
+      try {
+        const response = await fetch(`${N8N_GET_URL}?path=${encodeURIComponent(filePath)}&file=${encodeURIComponent(filePath)}`);
+        if (!response.ok) throw new Error("HTTP error " + response.status);
+        
+        const data = await response.json();
+        
+        contentEl.value = (typeof data === 'string') ? data : (data.content || data.fileContent || JSON.stringify(data, null, 2));
+        contentEl.disabled = false;
+        saveBtn.disabled = false;
+        loaderEl.style.display = 'none';
+        statusEl.innerText = "آماده ویرایش";
+      } catch (err) {
+        console.error(err);
+        loaderTextEl.innerText = "❌ خطا در دریافت فایل از n8n!";
+        document.querySelector('.spinner').style.display = 'none';
+        statusEl.innerText = "خطا";
+      }
+    }
+
+    async function saveFile() {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = "<span>⏳ در حال ذخیره...</span>";
+      statusEl.innerText = "در حال ارسال به GitHub...";
+
+      try {
+        const payload = {
+          filePath: filePath,
+          content: contentEl.value,
+          chatId: chatId
+        };
+
+        const response = await fetch(N8N_SAVE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("Save error " + response.status);
+
+        statusEl.innerText = "ذخیره شد ✅";
+        if (tg) {
+          tg.close();
         } else {
-          throw new Error('فایل یافت نشد یا خالی است');
+          alert("تغییرات با موفقیت ذخیره شد!");
         }
       } catch (err) {
         console.error(err);
-        document.getElementById('loading-text').innerText = 'خطا در دریافت فایل یا وب‌هوک هنوز ست نشده.';
-      }
-    }
-
-    // ذخیره محتوای جدید فایل
-    async function saveFile() {
-      const saveBtn = document.getElementById('saveBtn');
-      const content = document.getElementById('fileContent').value;
-
-      saveBtn.disabled = true;
-      saveBtn.innerText = 'در حال ذخیره...';
-
-      try {
-        const res = await fetch(N8N_SAVE_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            filePath: filePath,
-            chatId: chatId,
-            content: content,
-            sha: fileSha
-          })
-        });
-
-        if (res.ok) {
-          if (tg) {
-            tg.showPopup({
-              title: "موفق",
-              message: "تغییرات با موفقیت در گیت‌هاب ذخیره شد!",
-              buttons: [{ type: "ok" }]
-            }, () => {
-              tg.close();
-            });
-          } else {
-            alert('تغییرات با موفقیت ذخیره شد!');
-          }
-        } else {
-          throw new Error('خطا در ذخیره فایل');
-        }
-      } catch (err) {
-        alert('خطا در ارتباط با سرور یا ذخیره در گیت‌هاب');
+        alert("خطا در ذخیره تغییرات!");
         saveBtn.disabled = false;
-        saveBtn.innerText = '💾 ذخیره تغییرات (Commit)';
+        saveBtn.innerHTML = "<span>💾 ذخیره تغییرات (Commit)</span>";
+        statusEl.innerText = "خطا در ذخیره";
       }
     }
 
-    // لود اولیه
-    window.onload = loadFileContent;
+    loadContent();
   </script>
 </body>
 </html>
