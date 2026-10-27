@@ -1,4 +1,4 @@
 {
-  "promptDelete": false,
+  "promptDelete": true,
   "deleteUnlinkedAttachments": "always"
 }
