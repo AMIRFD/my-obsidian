@@ -13,10 +13,31 @@
         "a": 1,
         "rgb": 46079
       }
+    },
+    {
+      "query": "path:\"Project/Ai/GAPGPT/Master prompt (GapGPT)\"  ",
+      "color": {
+        "a": 1,
+        "rgb": 16769187
+      }
+    },
+    {
+      "query": "path:\"Project/Ai/GAPGPT/Money-making ideas\"  ",
+      "color": {
+        "a": 1,
+        "rgb": 11657298
+      }
+    },
+    {
+      "query": "path:Project/Ai/Animation/Woody_Lab  ",
+      "color": {
+        "a": 1,
+        "rgb": 5431378
+      }
     }
   ],
   "collapse-display": false,
-  "showArrow": false,
+  "showArrow": true,
   "textFadeMultiplier": -3,
   "nodeSizeMultiplier": 1,
   "lineSizeMultiplier": 1,
@@ -26,5 +47,5 @@
   "linkStrength": 1,
   "linkDistance": 250,
   "scale": 0.7132754626224403,
-  "close": true
+  "close": false
 }
