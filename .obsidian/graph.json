@@ -5,7 +5,7 @@
   "showAttachments": false,
   "hideUnresolved": false,
   "showOrphans": true,
-  "collapse-color-groups": false,
+  "collapse-color-groups": true,
   "colorGroups": [
     {
       "query": "path:\"Project/Ai/n8n/Documenting the project\"  ",
@@ -32,7 +32,21 @@
       "query": "path:Project/Ai/Animation/Woody_Lab  ",
       "color": {
         "a": 1,
-        "rgb": 5431378
+        "rgb": 29952
+      }
+    },
+    {
+      "query": "path:\"My_Document/Personal doc\"  ",
+      "color": {
+        "a": 1,
+        "rgb": 16777215
+      }
+    },
+    {
+      "query": "path:My_Document/Tutorials  ",
+      "color": {
+        "a": 1,
+        "rgb": 7012425
       }
     }
   ],
@@ -47,5 +61,5 @@
   "linkStrength": 1,
   "linkDistance": 250,
   "scale": 0.7132754626224403,
-  "close": false
+  "close": true
 }
