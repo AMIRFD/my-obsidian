@@ -1,3 +1,3 @@
 ICMP: Internet control message protocol
-SSH:
-Telnet:
+SSH: Secure socket shell
+Telnet: Telenetwork
