@@ -133,3 +133,10 @@ Destination Host Unreachable
 یکی Addressing
 
 دیگری Routering
+## 1-1         **لایه چهارم** Transport
+
+تعریف:
+
+·      کارش جابجایی یا انتقال بسته هستش.
+
+·      نوع انتقال ما در این لایه مشخص میشه یعنی آیا سرعت مهمه و امنیت پایینه که میشه |UDP  connection lessو یا دقت مهمه و امنیت بالا که میشه  TCP| Connection-oriented
