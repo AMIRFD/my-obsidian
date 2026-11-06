@@ -3,3 +3,4 @@ SSH: Secure socket shell
 Telnet: Telenetwork
 AAA server: Authentication ، Authorization ، Accounting
 VTP: VLAN Trunking Protocol
+OSI: Open system interconnection
