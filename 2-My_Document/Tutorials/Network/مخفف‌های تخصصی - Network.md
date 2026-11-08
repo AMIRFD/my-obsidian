@@ -4,3 +4,5 @@ Telnet: Telenetwork
 AAA server: Authentication ، Authorization ، Accounting
 VTP: VLAN Trunking Protocol
 OSI: Open system interconnection
+TGT: Ticket Granting Ticket
+TGS: Ticket Granting Service
