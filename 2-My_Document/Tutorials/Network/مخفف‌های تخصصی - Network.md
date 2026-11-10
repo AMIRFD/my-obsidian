@@ -6,3 +6,4 @@ VTP: VLAN Trunking Protocol
 OSI: Open system interconnection
 TGT: Ticket Granting Ticket
 TGS: Ticket Granting Service
+WLC: Wireless 
