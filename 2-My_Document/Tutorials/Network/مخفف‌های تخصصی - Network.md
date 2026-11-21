@@ -12,3 +12,6 @@ DDOS:Distributed Denial of Service
 MITM: Man in the middle
 
 MAC
+DNS
+DHCP
+ARP
